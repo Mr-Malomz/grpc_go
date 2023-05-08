@@ -15,7 +15,7 @@ import (
 type dbHandler interface {
 	GetUser(id string) (*User, error)
 	CreateUser(user User) (*mongo.InsertOneResult, error)
-	UpdateUser(user User) (*mongo.UpdateResult, error)
+	UpdateUser(id string, user User) (*mongo.UpdateResult, error)
 	DeleteUser(id string) (*mongo.DeleteResult, error)
 	GetAllUsers() ([]*User, error)
 }
@@ -48,7 +48,8 @@ func NewDBHandler() dbHandler {
 }
 
 func colHelper(db *DB) *mongo.Collection {
-	return db.client.Database("projectMngt").Collection("user")
+	// return db.client.Database("projectMngt").Collection("user")
+	return db.client.Database("rustDB").Collection("User")
 }
 
 func (db *DB) CreateUser(user User) (*mongo.InsertOneResult, error) {
@@ -56,7 +57,14 @@ func (db *DB) CreateUser(user User) (*mongo.InsertOneResult, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
-	res, err := col.InsertOne(ctx, user)
+	newUser := User{
+		Id:       primitive.NewObjectID(),
+		Name:     user.Name,
+		Location: user.Location,
+		Title:    user.Title,
+	}
+
+	res, err := col.InsertOne(ctx, newUser)
 
 	if err != nil {
 		return nil, err
@@ -82,12 +90,12 @@ func (db *DB) GetUser(id string) (*User, error) {
 	return &user, err
 }
 
-func (db *DB) UpdateUser(user User) (*mongo.UpdateResult, error) {
+func (db *DB) UpdateUser(id string, user User) (*mongo.UpdateResult, error) {
 	col := colHelper(db)
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
-	objId, _ := primitive.ObjectIDFromHex(user.Id.String())
+	objId, _ := primitive.ObjectIDFromHex(id)
 
 	update := bson.M{"name": user.Name, "location": user.Location, "title": user.Title}
 

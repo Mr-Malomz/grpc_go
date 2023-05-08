@@ -32,7 +32,7 @@ message CreateUserResponse {
 }
 
 message UpdateUserRequest {
-    string _id = 1;
+    string id = 1;
     string name = 2;
     string location = 3;
     string title = 4;
