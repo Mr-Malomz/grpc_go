@@ -1,5 +1,6 @@
 syntax = "proto3";
 package user;
+option go_package = "grpc_go/proto";
 
 service UserService {
     rpc GetUser (UserRequest) returns (UserResponse);
