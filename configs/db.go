@@ -48,8 +48,7 @@ func NewDBHandler() dbHandler {
 }
 
 func colHelper(db *DB) *mongo.Collection {
-	// return db.client.Database("projectMngt").Collection("user")
-	return db.client.Database("rustDB").Collection("User")
+	return db.client.Database("projectMngt").Collection("User")
 }
 
 func (db *DB) CreateUser(user User) (*mongo.InsertOneResult, error) {
