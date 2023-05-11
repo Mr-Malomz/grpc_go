@@ -12,7 +12,7 @@ type UserServiceServer struct {
 	pb.UnimplementedUserServiceServer
 }
 
-func (service UserServiceServer) GetUser(ctx context.Context, req *pb.UserRequest) (*pb.UserResponse, error) {
+func (service *UserServiceServer) GetUser(ctx context.Context, req *pb.UserRequest) (*pb.UserResponse, error) {
 	resp, err := db.GetUser(req.Id)
 
 	if err != nil {
@@ -21,7 +21,7 @@ func (service UserServiceServer) GetUser(ctx context.Context, req *pb.UserReques
 	return &pb.UserResponse{Id: resp.Id.String(), Name: resp.Name, Location: resp.Location, Title: resp.Title}, nil
 }
 
-func (service UserServiceServer) CreateUser(ctx context.Context, req *pb.CreateUserRequest) (*pb.CreateUserResponse, error) {
+func (service *UserServiceServer) CreateUser(ctx context.Context, req *pb.CreateUserRequest) (*pb.CreateUserResponse, error) {
 	newUser := configs.User{Name: req.Name, Location: req.Location, Title: req.Title}
 	_, err := db.CreateUser(newUser)
 
@@ -31,7 +31,7 @@ func (service UserServiceServer) CreateUser(ctx context.Context, req *pb.CreateU
 	return &pb.CreateUserResponse{Data: "User created successfully!"}, nil
 }
 
-func (service UserServiceServer) UpdateUser(ctx context.Context, req *pb.UpdateUserRequest) (*pb.UpdateUserResponse, error) {
+func (service *UserServiceServer) UpdateUser(ctx context.Context, req *pb.UpdateUserRequest) (*pb.UpdateUserResponse, error) {
 	newUser := configs.User{Name: req.Name, Location: req.Location, Title: req.Title}
 	_, err := db.UpdateUser(req.Id, newUser)
 
@@ -41,7 +41,7 @@ func (service UserServiceServer) UpdateUser(ctx context.Context, req *pb.UpdateU
 	return &pb.UpdateUserResponse{Data: "User updated successfully!"}, nil
 }
 
-func (service UserServiceServer) DeleteUser(ctx context.Context, req *pb.DeleteUserRequest) (*pb.DeleteUserResponse, error) {
+func (service *UserServiceServer) DeleteUser(ctx context.Context, req *pb.DeleteUserRequest) (*pb.DeleteUserResponse, error) {
 	_, err := db.DeleteUser(req.Id)
 
 	if err != nil {
@@ -50,7 +50,7 @@ func (service UserServiceServer) DeleteUser(ctx context.Context, req *pb.DeleteU
 	return &pb.DeleteUserResponse{Data: "User details deleted successfully!"}, nil
 }
 
-func (service UserServiceServer) GetAllUsers(context.Context, *pb.Empty) (*pb.GetAllUsersResponse, error) {
+func (service *UserServiceServer) GetAllUsers(context.Context, *pb.Empty) (*pb.GetAllUsersResponse, error) {
 	resp, err := db.GetAllUsers()
 	var users []*pb.UserResponse
 
